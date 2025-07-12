@@ -3,24 +3,37 @@ import hashlib
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 
-# Configuration
-USER_DATA_FILE = "users.json"
+# Configuration - use absolute path
+USER_DATA_DIR = Path(__file__).parent / "user_data"
+USER_DATA_FILE = USER_DATA_DIR / "users.json"
+
+# Create user_data directory if it doesn't exist
+USER_DATA_DIR.mkdir(exist_ok=True)
 
 def load_users():
-    """Load users from JSON file"""
-    if os.path.exists(USER_DATA_FILE):
-        try:
-            with open(USER_DATA_FILE, 'r') as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            return {}
-    return {}
+    """Load users from JSON file, create file if it doesn't exist"""
+    try:
+        if not os.path.exists(USER_DATA_FILE):
+            with open(USER_DATA_FILE, 'w') as f:
+                json.dump({}, f)
+        
+        with open(USER_DATA_FILE, 'r') as f:
+            return json.load(f)
+    except (json.JSONDecodeError, IOError) as e:
+        st.error(f"Error loading user data: {e}")
+        return {}
 
 def save_users(users):
-    """Save users to JSON file"""
-    with open(USER_DATA_FILE, 'w') as f:
-        json.dump(users, f, indent=2)
+    """Save users to JSON file with error handling"""
+    try:
+        with open(USER_DATA_FILE, 'w') as f:
+            json.dump(users, f, indent=2)
+        return True
+    except Exception as e:
+        st.error(f"Error saving user data: {e}")
+        return False
 
 def hash_password(password):
     """Hash password using SHA-256"""
@@ -66,8 +79,10 @@ def signup_user(username, email, password):
         "created_at": datetime.now().isoformat()
     }
     
-    save_users(users)
-    return True, "Account created successfully!"
+    if save_users(users):
+        return True, "Account created successfully!"
+    else:
+        return False, "Failed to save user data. Please try again."
 
 def login_user(username, password):
     """Authenticate user login"""
