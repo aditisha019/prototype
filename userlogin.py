@@ -106,7 +106,7 @@ def main():
         time.sleep(1)
         
         # Navigate to landing page
-        st.switch_page("landingpage.py")
+        st.switch_page("landingpage")
     
     else:
         # User is not logged in - show login/signup
