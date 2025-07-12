@@ -113,19 +113,24 @@ def main():
     
     # Main app logic
     if st.session_state.logged_in:
-        # User is logged in - redirect to landing page
-        st.success(f"Welcome, {st.session_state.username}! Redirecting to landing page...")
-        
-        # Add a small delay and then switch to landing page
-        import time
-        time.sleep(1)
-        
-        # Navigate to landing page
-        st.switch_page("pages/landingpage.py")
+    st.success(f"Welcome, {st.session_state.username}!")
     
-    else:
-        # User is not logged in - show login/signup
-        st.title("🔐 User Authentication")
+    # Add a button to manually navigate to avoid automatic redirection issues
+    if st.button("Go to Business Guide"):
+        try:
+            # Try both possible paths
+            try:
+                st.switch_page("pages/landingpage.py")
+            except:
+                st.switch_page("landingpage.py")
+        except Exception as e:
+            st.error(f"Navigation failed: {str(e)}")
+            st.write("Please click the button above to navigate manually")
+    
+    # Show temporary loading message
+    with st.spinner("Preparing your dashboard..."):
+        time.sleep(3)
+    st.rerun()
         
         # Create tabs for Login and Signup
         tab1, tab2 = st.tabs(["Login", "Sign Up"])
