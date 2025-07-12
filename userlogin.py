@@ -120,7 +120,7 @@ def main():
         try:
             # Try both possible paths
             try:
-                st.switch_page("pages/landingpage.py")
+                st.switch_page("./pages/landingpage.py")
             except:
                 st.switch_page("landingpage.py")
         except Exception as e:
