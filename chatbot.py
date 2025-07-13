@@ -1,11 +1,9 @@
 import os
 import streamlit as st
-from dotenv import load_dotenv
 import google.generativeai as gen_ai
 
-# Load environment variables
-load_dotenv()
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+# Load Google API Key from Streamlit secrets
+GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
 
 # Configure Gemini API
 gen_ai.configure(api_key=GOOGLE_API_KEY)
@@ -33,24 +31,19 @@ Keep your tone encouraging, clear, and step-by-step when needed.
 
 GREETING = "👋 Namaste! I'm VyaPyaarAI, here to help you find the right business idea. Let's begin!"
 
-# ✅ Main chatbot UI function (called from main.py)
 def chatbot_page():
-    # Back to Home button
     if st.button("⬅️ Back to Home"):
         st.session_state.page = "landing"
         st.rerun()
 
     st.title("💬 VyaPyaarAI – Business Idea Chatbot")
-    
 
-    # Initialize chat session
     if "chat_session" not in st.session_state:
         st.session_state.chat_session = model.start_chat(history=[
             {"role": "user", "parts": [SYSTEM_PROMPT]},
             {"role": "model", "parts": [GREETING]}
         ])
 
-    # Display chat history
     for message in st.session_state.chat_session.history:
         if message.role == "user" and SYSTEM_PROMPT.strip() in message.parts[0].text:
             continue
@@ -58,7 +51,6 @@ def chatbot_page():
         with st.chat_message("assistant" if message.role == "model" else message.role):
             st.markdown(message.parts[0].text)
 
-    # User input
     user_input = st.chat_input("Type your business question here...")
 
     if user_input:
