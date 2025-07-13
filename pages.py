@@ -23,7 +23,17 @@ def landing_page():
 <style>
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display: none;}
-
+     body {
+                background-image: url('https://images.unsplash.com/photo-1557682260-96773eb01377');  /* Replace with your image */
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+    .main-title, .subtitle, .description, h3 {
+                color: white !important;
+                text-shadow: 1px 1px 2px #000;
+            }
     .stButton > button {
         background-color: white;
         color:#0E1117 ;
